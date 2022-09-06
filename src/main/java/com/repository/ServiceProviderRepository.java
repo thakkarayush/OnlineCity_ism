@@ -8,4 +8,6 @@ import com.bean.ServiceProviderBean;
 @Repository
 public interface ServiceProviderRepository extends JpaRepository<ServiceProviderBean, Integer> {
 	ServiceProviderBean findByEmail(String email);
+
+	ServiceProviderBean findByPincodeAndService(String pincode,String service);
 }

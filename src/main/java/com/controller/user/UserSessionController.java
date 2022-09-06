@@ -22,7 +22,6 @@ import com.bean.UserBean;
 import com.repository.RoleRepository;
 import com.repository.UserRepository;
 import com.service.OtpService;
-import com.service.TokenService;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -40,9 +39,9 @@ public class UserSessionController {
 	@Autowired
 	BCryptPasswordEncoder bcrypt;
 
-	@Autowired
-	TokenService tokenService;
-	
+//	@Autowired
+//	TokenService tokenService;
+//	
 	@Autowired
 	EmailController emailController;
 	
@@ -84,8 +83,8 @@ public class UserSessionController {
 			res.setMsg("Invalid Credentials");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(res);
 		}else {
-			String authToken = tokenService.generateToken(16);
-			dbUser.setAuthToken(authToken);
+//			String authToken = tokenService.generateToken(16);
+//			dbUser.setAuthToken(authToken);
 			userRepository.save(dbUser);
 			log.info("AuthToken generated");
 			
@@ -104,15 +103,15 @@ public class UserSessionController {
 		EmailDetailsBean emailBean = new EmailDetailsBean();
 		String email =  login.getEmail();
 		System.out.println(email);
-//		UserBean userBean = userRepository.findByEmail(email);
+		UserBean userBean = userRepository.findByEmail(email);
 		Integer otp = otpService.genrateOtp();
 		emailBean.setRecipient(email);
 		
 		emailBean.setSubject("forget password otp");
 		emailBean.setMsgBody("forgot password OTP is-"+otp);
 		emailController.sendMail(emailBean);
-//		userBean.setOtp(otp);
-//		userRepository.save(userBean);
+		userBean.setOtp(otp);
+		userRepository.save(userBean);
 		return ResponseEntity.ok(emailBean);
 	}
 	

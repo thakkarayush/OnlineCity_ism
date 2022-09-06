@@ -56,7 +56,7 @@ public class UserBean {
 	@JoinColumn(name = "roleId", nullable = false)
 	RoleBean role;
 	
-	String authToken;
+//	String authToken;
 	
 	private Integer otp;
 	

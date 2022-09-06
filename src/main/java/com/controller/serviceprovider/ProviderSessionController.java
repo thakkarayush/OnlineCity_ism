@@ -8,11 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bean.LoginBean;
 import com.bean.ResponseBean;
@@ -21,9 +21,7 @@ import com.bean.ServiceProviderBean;
 import com.repository.RoleRepository;
 import com.repository.ServiceProviderRepository;
 import com.service.FileUploadService;
-import com.service.TokenService;
 
-import antlr.StringUtils;
 import lombok.extern.log4j.Log4j2;
 
 @CrossOrigin
@@ -39,23 +37,23 @@ public class ProviderSessionController {
 	
 	@Autowired
 	BCryptPasswordEncoder bcrypt;
-
-	@Autowired
-	TokenService tokenService;
+//
+//	@Autowired
+//	TokenService tokenService;
 	
 	@Autowired
 	FileUploadService fileUploadService;
 
 	@PostMapping("/signup")
-	public ResponseEntity<ResponseBean<ServiceProviderBean>> signUp(@RequestBody ServiceProviderBean serviceProviderBean, MultipartFile multipartFile){
+	public ResponseEntity<ResponseBean<ServiceProviderBean>> signUp(@RequestBody ServiceProviderBean serviceProviderBean){
 		ServiceProviderBean dbUser = serviceProviderRepository.findByEmail(serviceProviderBean.getEmail());
 		ResponseBean<ServiceProviderBean> res = new ResponseBean<>();
 		log.info("signup...");
 			if(dbUser == null) {
-				
+//				fileUploadService(serviceProviderBean.getPhoto());
 				RoleBean role = roleRepository.findByRoleName("service provider");
 				serviceProviderBean.setRole(role);
-				
+//				serviceProviderBean.setPhoto("resources\\images\\"+file.getOriginalFilename());
 				String encPassword = bcrypt.encode(serviceProviderBean.getPassword());
 				serviceProviderBean.setPassword(encPassword);
 				serviceProviderRepository.save(serviceProviderBean);
@@ -81,8 +79,8 @@ public class ProviderSessionController {
 			res.setMsg("Invalid Credentials");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(res);
 		} else {
-			String authToken = tokenService.generateToken(16);
-			dbUser.setAuthToken(authToken);
+//			String authToken = tokenService.generateToken(16);
+//			dbUser.setAuthToken(authToken);
 			serviceProviderRepository.save(dbUser);
 			log.info("AuthToken generated");
 			
@@ -95,4 +93,17 @@ public class ProviderSessionController {
 				
 		}
 	}
+	
+//	@PostMapping("/upload/image")
+//    public ResponseEntity<ImageUploadResponse> uplaodImage(@RequestParam("image") MultipartFile file)
+//            throws IOException {
+//
+//        imageRepository.save(Image.builder()
+//                .name(file.getOriginalFilename())
+//                .type(file.getContentType())
+//                .image(ImageUtility.compressImage(file.getBytes())).build());
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(new ImageUploadResponse("Image uploaded successfully: " +
+//                        file.getOriginalFilename()));
+//    }
 }

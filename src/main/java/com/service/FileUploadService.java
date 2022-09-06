@@ -1,26 +1,21 @@
 package com.service;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileUploadService {
-	public void imageUpload(MultipartFile file, String email) {
-		try {
-			String mainPath = "D:\\PROJECT\\TRAINING\\ism_web_2022\\src\\main\\webapp\\resources\\images";
-			File folder = new File(mainPath, email + "");
-			folder.mkdir();// mainpath userid => folder
-			File newFile = new File(folder, file.getOriginalFilename());
-			byte b[] = file.getBytes();// read all bytes from uploaded file
-			FileOutputStream fos = new FileOutputStream(newFile);
-			fos.write(b);// write all uploaded byte into newfile
-			fos.close();// save and close
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
+	private void saveUploadedFile(MultipartFile file) throws IOException {
+	    if (!file.isEmpty()) {
+	        byte[] bytes = file.getBytes();
+	        Path path = Paths.get("resources//images//" + file.getOriginalFilename());
+	        Files.write(path, bytes);
+	    }
 	}
 
 }

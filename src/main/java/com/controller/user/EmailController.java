@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.bean.EmailDetailsBean;
 import com.service.EmailService;
 
-// Annotation
+
 @Controller
-// Class
 public class EmailController {
 
 	@Autowired 

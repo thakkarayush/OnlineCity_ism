@@ -1,5 +1,6 @@
 package com.bean;
 
+import java.io.File;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -34,9 +35,9 @@ public class ServiceProviderBean {
 	private String email;
 	private Integer phone;
 	private String password;
-	private Integer pincode;
+	private String pincode;
 	private String service;
-	private String authToken;
+//	private String authToken;
 	private String photo;
 	
 	@ManyToOne

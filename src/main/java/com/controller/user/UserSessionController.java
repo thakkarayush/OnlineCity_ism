@@ -130,7 +130,7 @@ public class UserSessionController {
 			res.setData(email);
 			res.setMsg("successfully...");
 			userBean.setOtp(null);
-//			userRepo.save(userBean);
+			userRepository.save(userBean);
 			return ResponseEntity.ok(res);
 		}else {
 			res.setData(email);

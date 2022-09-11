@@ -1,13 +1,18 @@
 package com.controller.user;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -96,7 +101,35 @@ public class UserSessionController {
 			return ResponseEntity.ok(res);
 		}
 	}
+	@GetMapping("/getallUsers")
+	public ResponseEntity<?> getallUsers(UserBean user) {
+		return ResponseEntity.ok(userRepository.findAll());
+	}
 	
+	@GetMapping("/details/{userId}")
+	public ResponseEntity<?> getUserDetails(@PathVariable("userId") Integer userId){
+		Optional<UserBean> user= userRepository.findById(userId);
+		return ResponseEntity.ok(user);
+	}
+	
+	@DeleteMapping("/delete/{userId}")
+	public ResponseEntity<ResponseBean<UserBean>> removeUser(@PathVariable("userId") Integer userId) {
+		System.out.println("delete user");
+		UserBean user = userRepository.findByUserId(userId);
+		ResponseBean<UserBean> res = new ResponseBean<>();
+
+		if (user == null) {
+			res.setMsg("invalid");
+			
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+		} else {
+			userRepository.deleteById(userId);
+			res.setData(user);
+			System.out.println("user delete "+user.getUserId());
+			res.setMsg("user removed");
+			return ResponseEntity.ok(res);
+		}
+	}
 	@PostMapping("/otpsend")
 	public ResponseEntity<?> sendotp(@RequestBody LoginBean login){
 		System.out.println("HEllo");

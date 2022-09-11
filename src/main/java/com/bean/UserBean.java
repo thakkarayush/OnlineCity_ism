@@ -1,12 +1,15 @@
 package com.bean;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -59,5 +62,9 @@ public class UserBean {
 //	String authToken;
 	
 	private Integer otp;
+	
+	@ManyToMany
+	@JoinTable(name = "user_appointment", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "appointmentId"))
+	Set<AppointmentBean> appointments;
 	
 }

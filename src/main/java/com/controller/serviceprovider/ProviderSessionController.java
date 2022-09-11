@@ -8,16 +8,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bean.AppointmentBean;
 import com.bean.LoginBean;
 import com.bean.ResponseBean;
 import com.bean.RoleBean;
 import com.bean.ServiceProviderBean;
+import com.repository.AppointmentRepository;
 import com.repository.RoleRepository;
 import com.repository.ServiceProviderRepository;
 import com.service.FileUploadService;
@@ -43,6 +48,9 @@ public class ProviderSessionController {
 	
 	@Autowired
 	FileUploadService fileUploadService;
+	
+	@Autowired
+	AppointmentRepository appointmentRepository;
 
 	@PostMapping("/signup")
 	public ResponseEntity<ResponseBean<ServiceProviderBean>> signUp(@RequestBody ServiceProviderBean serviceProviderBean){
@@ -93,7 +101,27 @@ public class ProviderSessionController {
 				
 		}
 	}
-	
+	@GetMapping("/getallSp")
+	public ResponseEntity<?> getallSp(ServiceProviderBean provider) {
+		return ResponseEntity.ok(serviceProviderRepository.findAll());
+	}
+	@DeleteMapping("/delete/{providerId}")
+	public ResponseEntity<ResponseBean<ServiceProviderBean>> removeProvider(@PathVariable("providerId") Integer providerId) {
+		ServiceProviderBean provider = serviceProviderRepository.findByProviderId(providerId);
+		ResponseBean<ServiceProviderBean> res = new ResponseBean<>();
+
+		if (provider == null) {
+			res.setMsg("invalid");
+			
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+		} else {
+			serviceProviderRepository.deleteById(providerId);
+			res.setData(provider);
+			System.out.println("provider delete "+provider.getProviderId());
+			res.setMsg("provider removed");
+			return ResponseEntity.ok(res);
+		}
+	}
 //	@PostMapping("/upload/image")
 //    public ResponseEntity<ImageUploadResponse> uplaodImage(@RequestParam("image") MultipartFile file)
 //            throws IOException {
@@ -106,4 +134,14 @@ public class ProviderSessionController {
 //                .body(new ImageUploadResponse("Image uploaded successfully: " +
 //                        file.getOriginalFilename()));
 //    }
+	
+	@PostMapping("/bookappointment")
+	public ResponseEntity<ResponseBean<AppointmentBean>> bookAppointmnet(@RequestBody AppointmentBean appointmentBean){
+		ResponseBean<AppointmentBean> res = new ResponseBean<>();
+		appointmentRepository.save(appointmentBean);
+		res.setData(appointmentBean);
+		res.setMsg("appointmnet done...");
+		return ResponseEntity.ok(res);
+		
+	}
 }

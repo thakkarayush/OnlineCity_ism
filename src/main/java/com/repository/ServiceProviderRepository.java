@@ -12,4 +12,6 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
 	ServiceProviderBean findByEmail(String email);
 
 	List<ServiceProviderBean> findByPincodeAndService(String pincode,String service);
+
+	ServiceProviderBean findByProviderId(Integer providerId);
 }

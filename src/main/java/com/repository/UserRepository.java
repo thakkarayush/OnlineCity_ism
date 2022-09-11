@@ -8,4 +8,6 @@ import com.bean.UserBean;
 @Repository
 public interface UserRepository extends JpaRepository<UserBean, Integer> {
 	UserBean findByEmail(String email);
+
+	UserBean findByUserId(Integer userId);
 }
